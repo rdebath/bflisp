@@ -17,8 +17,8 @@ STORE_REQ = 45
 MEM = 50
 MEM_V = 0
 MEM_A = 2
-MEM_WRK = 4
-MEM_CTL_LEN = 8
+MEM_WRK = 6
+MEM_CTL_LEN = 10
 MEM_BLK_LEN = 512 + MEM_CTL_LEN
 
 def sym?(o)

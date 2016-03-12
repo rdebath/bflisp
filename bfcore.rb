@@ -32,7 +32,7 @@ class BFCore
     data.each do |d, i|
       hi = i / 256
       lo = i % 256
-      ptr = MEM + MEM_BLK_LEN * hi + MEM_CTL_LEN + lo * 2
+      ptr = MEM + MEM_BLK_LEN * (1+hi) + MEM_CTL_LEN + lo * 2
       g.add_word(ptr, d)
     end
 
@@ -61,7 +61,7 @@ class BFCore
     g.set_ptr(0)
 
     g.move_ptr(MEM_A)
-    g.emit '['
+    g.emit '+['
     g.move_word(MEM_A, MEM_A + MEM_BLK_LEN)
     g.move_ptr(MEM_A + MEM_BLK_LEN)
     g.set_ptr(MEM_A)
@@ -69,7 +69,6 @@ class BFCore
     g.move_ptr(MEM_A)
     g.emit '-]'
 
-    g.add(MEM_WRK, -1)
     256.times{|al|
       g.move_ptr(MEM_A + 1)
       g.ifzero(1) do
@@ -78,7 +77,6 @@ class BFCore
       g.add(MEM_A + 1, -1)
     }
     g.clear(MEM_A + 1)
-    g.add(MEM_WRK, 1)
     g.move_ptr(MEM_WRK)
     g.emit '[-'
     g.move_word(MEM_V, MEM_V - MEM_BLK_LEN)
@@ -106,7 +104,7 @@ class BFCore
     g.set_ptr(0)
 
     g.move_ptr(MEM_A)
-    g.emit '['
+    g.emit '+['
     g.move_word(MEM_V, MEM_V + MEM_BLK_LEN)
     g.move_word(MEM_A, MEM_A + MEM_BLK_LEN)
     g.move_ptr(MEM_A + MEM_BLK_LEN)
@@ -116,7 +114,6 @@ class BFCore
     g.emit '-]'
 
     # VH VL 0 AL 1
-    g.add(MEM_WRK, -1)
     256.times{|al|
       g.move_ptr(MEM_A + 1)
       g.ifzero(1) do
@@ -126,7 +123,6 @@ class BFCore
       g.add(MEM_A + 1, -1)
     }
     g.clear(MEM_A + 1)
-    g.add(MEM_WRK, 1)
     g.move_ptr(MEM_WRK)
     g.emit '[-' + '<' * MEM_BLK_LEN + ']'
 
