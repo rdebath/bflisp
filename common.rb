@@ -42,17 +42,21 @@ MEM = 70
 MEM_V = 0
 if $bfs24
   MEM_A = 3
-  MEM_WRK = 6
-  MEM_USE = 12
-  MEM_CTL_LEN = 15
-  MEM_BLK_LEN = (256*3) + MEM_CTL_LEN
 else
   MEM_A = 2
-  MEM_WRK = 4
-  MEM_USE = 8
-  MEM_CTL_LEN = 9
-  MEM_BLK_LEN = (256*2) + MEM_CTL_LEN
+
+  MEM_ZN = 6
+  MEM_CL = 8
+  MEM_CH = 9
+  MEM_RL = 10
+  MEM_RH = 11
+  MEM_D1 = 12
+  MEM_D2 = 13
+
+  MEM_CTL_LEN = 14
+  MEM_BLK_LEN = 512
 end
+
 
 def sym?(o)
   o.class == Symbol

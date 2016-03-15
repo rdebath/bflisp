@@ -60,44 +60,26 @@ class BFCore
       g.move_ptr(MEM)
       g.set_ptr(0)
 
-      if $bfs24
-        g.decloop(MEM_A-1) {
-          g.move_word(MEM_A, MEM_A + MEM_BLK_LEN*256)
-          g.move_ptr(MEM_A + MEM_BLK_LEN*256)
-          g.set_ptr(MEM_A)
-          g.add(MEM_USE+1, 1)
-        }
-      end
+      g.move(MEM_A, MEM_CH)
+      g.move(MEM_A+1, MEM_CL)
 
-      g.decloop(MEM_A) {
-        g.move_word(MEM_A, MEM_A + MEM_BLK_LEN)
-        g.move_ptr(MEM_A + MEM_BLK_LEN)
-        g.set_ptr(MEM_A)
-        g.add(MEM_USE, 1)
-      }
+      g.move_ptr(MEM_ZN)
 
-      256.times{|al|
-        g.move_ptr(MEM_A + 1)
-        g.ifzero(1) do
-          g.copy_word(MEM_CTL_LEN + al * (BITS / 8), MEM_V, MEM_WRK + 2)
-        end
-        g.add(MEM_A + 1, -1)
-      }
-      g.clear(MEM_A + 1)
+      # LOAD
+      # Z   Z   CL  CH  RL  RH  D1  D2  MEMORY
+      g.emit '>>>[->+>+<<]>[-<+>]<<[->>+<<<+>]<[->+<]>[<<+>>[-<+>]]<[->+<]>>[<'
+      g.emit '<<+>>>[-<<+>>]]<<[->>+<<]<[[-]+>>[<<->>[-<+>]]<[->+<]<[->>>-<<<]'
+      g.emit '>>->>>>>>[-<<<<<<<<+>>>>>>>>]>[-<<<<<<<<+>>>>>>>>]<<[->>+<<]<[->'
+      g.emit '>+<<]<[->>+<<]<[->>+<<]<[->>+<<]<[->>+<<]>>[<<+>>[-<+>]]<[->+<]>'
+      g.emit '>[<<<+>>>[-<<+>>]]<<[->>+<<]<]>>>>>>[-]>[-]>[-<+<+>>]<[->+<]>>[-'
+      g.emit '<<+<<<<+>>>>>>]<<<<<<[->>>>>>+<<<<<<]>[<<+>>[-<+>]]<[->+<]>>[<<<'
+      g.emit '+>>>[-<<+>>]]<<[->>+<<]<[[-]+>>[<<->>[-<+>]]<[->+<]<[->>>-<<<]>>'
+      g.emit '-<<[-<<+>>]>[-<<+>>]>[-<<+>>]>[-<<+>>]>[-<<+>>]>[-<<+>>]<<<<<<<<'
+      g.emit '[->>>>>>>>+<<<<<<<<]<[->>>>>>>>+<<<<<<<<]>>>>[<<+>>[-<+>]]<[->+<'
+      g.emit ']>>[<<<+>>>[-<<+>>]]<<[->>+<<]<]<<'
 
-      g.decloop(MEM_USE) {
-        g.move_word(MEM_V, MEM_V - MEM_BLK_LEN)
-        g.move_ptr(MEM_V - MEM_BLK_LEN)
-        g.set_ptr(MEM_V)
-      }
-
-      if $bfs24
-        g.decloop(MEM_USE+1) {
-          g.move_word(MEM_V, MEM_V - MEM_BLK_LEN*256)
-          g.move_ptr(MEM_V - MEM_BLK_LEN*256)
-          g.set_ptr(MEM_V)
-        }
-      end
+      g.move(MEM_D1, MEM_V)
+      g.move(MEM_D2, MEM_V+1)
 
       g.move_ptr(0)
       g.set_ptr(MEM)
@@ -114,42 +96,27 @@ class BFCore
       g.move_ptr(MEM)
       g.set_ptr(0)
 
-      if $bfs24
-        g.decloop(MEM_A-1) {
-          g.move_word(MEM_V, MEM_V + MEM_BLK_LEN*256)
-          g.move_word(MEM_A, MEM_A + MEM_BLK_LEN*256)
-          g.move_ptr(MEM_A + MEM_BLK_LEN*256)
-          g.set_ptr(MEM_A)
-          g.add(MEM_USE+1, 1)
-        }
-      end
 
-      g.decloop(MEM_A) {
-        g.move_word(MEM_V, MEM_V + MEM_BLK_LEN)
-        g.move_word(MEM_A, MEM_A + MEM_BLK_LEN)
-        g.move_ptr(MEM_A + MEM_BLK_LEN)
-        g.set_ptr(MEM_A)
-        g.add(MEM_USE, 1)
-      }
+      g.move(MEM_A, MEM_CH)
+      g.move(MEM_A+1, MEM_CL)
 
-      # VH VL 0 AL 1
-      256.times{|al|
-        g.move_ptr(MEM_A + 1)
-        g.ifzero(1) do
-          g.clear_word(MEM_CTL_LEN + al * (BITS / 8))
-          g.move_word(MEM_V, MEM_CTL_LEN + al * (BITS / 8))
-        end
-        g.add(MEM_A + 1, -1)
-      }
-      g.clear(MEM_A + 1)
+      g.move(MEM_V, MEM_D1)
+      g.move(MEM_V+1, MEM_D2)
 
-      g.move_ptr(MEM_USE)
-      g.emit '[-' + '<' * MEM_BLK_LEN + ']'
+      g.move_ptr(MEM_ZN)
 
-      if $bfs24
-        g.move_ptr(MEM_USE+1)
-        g.emit '[-' + '<' * (MEM_BLK_LEN*256) + ']'
-      end
+      # STORE
+      # Z   Z   CL  CH  RL  RH  D1  D2  MEMORY
+      g.emit '>>>[->+>+<<]>[-<+>]<<[->>+<<<+>]<[->+<]>[<<+>>[-<+>]]<[->+<]>>[<'
+      g.emit '<<+>>>[-<<+>>]]<<[->>+<<]<[[-]+>>[<<->>[-<+>]]<[->+<]<[->>>-<<<]'
+      g.emit '>>->>>>>>[-<<<<<<<<+>>>>>>>>]>[-<<<<<<<<+>>>>>>>>]<<[->>+<<]<[->'
+      g.emit '>+<<]<[->>+<<]<[->>+<<]<[->>+<<]<[->>+<<]>>[<<+>>[-<+>]]<[->+<]>'
+      g.emit '>[<<<+>>>[-<<+>>]]<<[->>+<<]<]>>>>>>>>[-]<<[->>+<<]>>>[-]<<[->>+'
+      g.emit '<<]<<<[<<+>>[-<+>]]<[->+<]>>[<<<+>>>[-<<+>>]]<<[->>+<<]<[[-]+>>['
+      g.emit '<<->>[-<+>]]<[->+<]<[->>>-<<<]>>-<<[-<<+>>]>[-<<+>>]>[-<<+>>]>[-'
+      g.emit '<<+>>]>[-<<+>>]>[-<<+>>]<<<<<<<<[->>>>>>>>+<<<<<<<<]<[->>>>>>>>+'
+      g.emit '<<<<<<<<]>>>>[<<+>>[-<+>]]<[->+<]>>[<<<+>>>[-<<+>>]]<<[->>+<<]<]'
+      g.emit '<<'
 
       g.move_ptr(0)
       g.set_ptr(MEM)
