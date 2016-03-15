@@ -88,7 +88,7 @@ $(BFS_SIMS): %.sim: %.bfs $(RUBY_DEPS) run.sh
 	./run.sh ./bfsim.rb -q $< > $@.tmp && mv $@.tmp $@
 
 $(BFS_OUTS): %.out: %.bf run.sh out/bfopt
-	./run.sh out/bfopt $< > $@.tmp && mv $@.tmp $@
+	./run.sh bf $< > $@.tmp && mv $@.tmp $@
 
 $(BFS_OKS): %.ok2: %.sim %.out
 	$(call run-diff,$*.sim,$*.out,sim:bf)
