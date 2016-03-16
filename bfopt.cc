@@ -246,6 +246,7 @@ void run(const vector<Op*>& ops) {
       case OP_LOOP: {
         int v = mem[mp];
         mem[mp] = 0;
+	if (v==0) break;
         for (map<int, int>::const_iterator iter = op->loop->addsub.begin();
              iter != op->loop->addsub.end();
              ++iter) {
